@@ -132,14 +132,15 @@ def train_model(train_loader, val_loader, model, optimizer, loss_fn, epochs=50):
     return train_hist, val_hist
 # 8) Quick hyper-parameter sweep exactly as in paper
 param_grid = {
-    "lr":      [1e-3],
-    "batch":   [8],
-    "hidden1": [20],
-    "hidden2": [20],
-    "N":       [250],
-    "s":       [6],
-    "m":       [10],
+    "lr":      [1e-3, 5e-4],
+    "batch":   [8, 16],
+    "hidden1": [20, 50],
+    "hidden2": [20, 50],
+    "N":       [125, 250, 500],
+    "s":       [4, 6, 8],
+    "m":       [10],  # unused currently
 }
+
 all_combos = [dict(zip(param_grid.keys(), v))
               for v in itertools.product(*param_grid.values())]
 
@@ -182,3 +183,9 @@ for p in all_combos:
 
 print("\n--- Training sweep finished ---")
 print("Results:", results)
+
+plt.plot(train_hist, label='Train')
+plt.plot(val_hist, label='Val')
+plt.title(f"LR={p['lr']}, Hidden={p['hidden1']}")
+plt.legend()
+plt.show()
