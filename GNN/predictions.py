@@ -13,12 +13,13 @@ MODEL_PATH = os.path.expanduser("GNN/hete_gcn_best.pt")
 
 # === 1) Best hyperparams (only for batching / data prep) ===
 best_params = {
+    "lr":      1e-3,
     "batch":   8,
-    "hidden1": 50,
-    "hidden2": 50,
-    "N":       500,
+    "hidden1": 20,
+    "hidden2": 20,
+    "N":       125,
     "s":       4,
-    "m":       10
+    "m":       5
 }
 
 # === 2) Regime detector & edge builder ===
@@ -129,27 +130,54 @@ def main():
     preds = np.vstack(preds)
     trues = np.vstack(trues)
 
-    # per‐ticker RMSE
-    rmse = np.sqrt(((preds - trues)**2).mean(axis=0))
-    tickers = rv.columns.tolist()
+    tickers     = rv.columns.tolist()
+    dates       = rv.index
+    y_dates     = dates[best_params["N"]:]      # one y per Data sample
+    test_dates  = y_dates[split:]               # align with your test_list
 
-    # plot RMSE
-    plt.figure(figsize=(12,5))
-    plt.bar(tickers, rmse)
-    plt.xticks(rotation=90)
-    plt.ylabel("RMSE")
-    plt.title("Per-Ticker Test RMSE")
-    plt.tight_layout()
-    plt.show()
+    # sanity check
+    print("preds.shape:", preds.shape, "trues.shape:", trues.shape)
+    print("len(test_dates):", len(test_dates))
 
-    # plot one ticker time series
-    i = 0
-    plt.figure(figsize=(10,4))
-    plt.plot(trues[:,i], label="True RV")
-    plt.plot(preds[:,i], label="Predicted RV")
-    plt.title(f"RV time-series for {tickers[i]}")
-    plt.legend()
-    plt.show()
+    # build DataFrames
+    preds_df = pd.DataFrame(preds, index=test_dates, columns=pd.Index(tickers))
+    trues_df = pd.DataFrame(trues, index=test_dates, columns=pd.Index(tickers))
 
-if __name__=="__main__":
+    # --- new: save to CSV ---
+    preds_df.to_csv(
+        "out_of_sample_predictions.csv",
+        float_format="%.4f",
+        date_format="%Y-%m-%d",
+        index_label="Date"
+    )
+    trues_df.to_csv(
+        "out_of_sample_actuals.csv",
+        float_format="%.4f",
+        date_format="%Y-%m-%d",
+        index_label="Date"
+    )
+    print("✅ Saved CSVs: out_of_sample_predictions.csv, out_of_sample_actuals.csv")
+    # --- end new ---
+
+    # loop over tickers and both show & save each figure
+    for ticker in tickers:
+        fig, ax = plt.subplots(figsize=(10,4))
+        trues_df[ticker].plot(ax=ax, label="True RV")
+        preds_df[ticker].plot(ax=ax, label="Pred RV", linestyle="--")
+        ax.set_title(f"Out-of-Sample RV for {ticker}")
+        ax.set_xlabel("Date")
+        ax.set_ylabel("RV")
+        ax.legend()
+        fig.tight_layout()
+
+        # show interactive window (if your backend supports it)
+        plt.show()
+        
+        # and also save to PNG so you can inspect later
+        outfn = f"oos_{ticker}.png"
+        fig.savefig(outfn)
+        print(f"Saved plot to {outfn}")
+        plt.close(fig)
+
+if __name__ == "__main__":
     main()

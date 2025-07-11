@@ -13,13 +13,12 @@ SAVE_PATH = "/Users/ananyaparikh/Documents/Coding/EquirusResearch/GNN/hete_gcn_b
 best_params = {
     "lr":      1e-3,
     "batch":   8,
-    "hidden1": 50,
-    "hidden2": 50,
-    "N":       500,
+    "hidden1": 20,
+    "hidden2": 20,
+    "N":       125,
     "s":       4,
-    "m":       10
+    "m":       5
 }
-
 
 # === 2) Regime detector as before ===
 def detect_regime(rv: pd.Series, s: int) -> torch.Tensor:
@@ -61,7 +60,7 @@ def make_data(logret: pd.DataFrame,
             continue
         regime_flags = []
         for col in window_rv:
-            regime_flags.append(detect_regime(window_rv[col], s).iloc[-1])
+            regime_flags.append(detect_regime(window_rv[col], s).iloc[-1].item())
         x = torch.stack([
             torch.from_numpy(x_lr.values).float(),
             torch.from_numpy(x_rv.values).float(),
