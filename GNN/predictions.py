@@ -16,10 +16,10 @@ best_params = {
     "lr":      1e-3,
     "batch":   8,
     "hidden1": 20,
-    "hidden2": 20,
+    "hidden2": 15,
     "N":       125,
-    "s":       4,
-    "m":       5
+    "s":       6,
+    "m":       10
 }
 
 # === 2) Regime detector & edge builder ===

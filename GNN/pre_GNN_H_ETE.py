@@ -73,6 +73,26 @@ def effective_transfer_entropy(x_raw, y_raw, m=50, bins=3, lag=1):
 
     return {"TE": te_actual, "ETE": ete, "Z": z, "mu": mu, "sigma": sigma}
 
+def compute_rte_zscores(te_mat, eps=1e-8):
+    """
+    Compute Z-scores for a TE matrix.
+    Args:
+        te_mat: 2D numpy array (TE matrix)
+        eps: small value to avoid division by zero
+    Returns:
+        z_mat: 2D numpy array of Z-scores, same shape as te_mat
+    """
+    nonzero = te_mat[te_mat > 0]
+    if len(nonzero) > 1:
+        mu = nonzero.mean()
+        sigma = nonzero.std(ddof=1)
+        if sigma < eps:
+            sigma = eps
+        z_mat = (te_mat - mu) / sigma
+    else:
+        z_mat = np.zeros_like(te_mat)
+    return z_mat
+
 def compute_transfer_entropy(x_raw, y_raw, m=10, bins=3, lag=1):
     """
     Compute transfer entropy from y → x.
@@ -90,3 +110,4 @@ def compute_transfer_entropy(x_raw, y_raw, m=10, bins=3, lag=1):
     """
     result = effective_transfer_entropy(x_raw, y_raw, m, bins, lag)
     return result["ETE"] 
+

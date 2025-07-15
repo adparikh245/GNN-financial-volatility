@@ -12,13 +12,20 @@ SAVE_PATH = "/Users/ananyaparikh/Documents/Coding/EquirusResearch/GNN/hete_gcn_b
 # === 1) Your best hyperparameters ===
 best_params = {
     "lr":      1e-3,
-    "batch":   8,
+    "batch":   8, #8
     "hidden1": 20,
-    "hidden2": 20,
-    "N":       125,
-    "s":       4,
-    "m":       5
+    "hidden2": 15,
+    "N":       125, #125
+    "s":       6, #4
+    "m":       10 #5
 }
+
+# Training with {'lr': 0.001, 'batch': 8, 'hidden1': 10, 'hidden2': 10, 'N': 125, 's': 6, 'm': 6} : 0.1335
+# Training with {'lr': 0.001, 'batch': 8, 'hidden1': 15, 'hidden2': 10, 'N': 125, 's': 6, 'm': 6} : 0.1382
+# Training with {'lr': 0.001, 'batch': 8, 'hidden1': 15, 'hidden2': 10, 'N': 125, 's': 6, 'm': 10}: 0.1364
+# Training with {'lr': 0.001, 'batch': 8, 'hidden1': 20, 'hidden2': 10, 'N': 125, 's': 6, 'm': 10}: 0.1321
+# Training with {'lr': 0.001, 'batch': 8, 'hidden1': 17, 'hidden2': 10, 'N': 125, 's': 6, 'm': 10}: 0.1345
+# Training with {'lr': 0.001, 'batch': 8, 'hidden1': 20, 'hidden2': 20, 'N': 125, 's': 4, 'm': 5}:  0.1370
 
 # === 2) Regime detector as before ===
 def detect_regime(rv: pd.Series, s: int) -> torch.Tensor:
