@@ -46,3 +46,6 @@ print(metrics_summary)
 # Save the summary to a CSV file
 metrics_summary.to_csv("metrics_summary.csv", index=False)
 print("✅ Saved metrics_summary.csv")
+
+metrics_df.to_csv("per_ticker_metrics.csv")
+print("✅ Saved per-ticker metrics to per_ticker_metrics.csv")
