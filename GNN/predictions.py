@@ -9,7 +9,7 @@ from torch_geometric.nn import GCNConv
 import torch.nn.functional as F
 
 # === 0) Point this at the real location of your saved model ===
-MODEL_PATH = os.path.expanduser("GNN/hete_gcn_best.pt")
+MODEL_PATH = "../models/hete_gcn_best.pt"
 
 # === 1) Best hyperparams (only for batching / data prep) ===
 best_params = {
@@ -29,8 +29,8 @@ def detect_regime(rv: pd.Series, s: int) -> np.ndarray:
     return ((rv - rv.mean()).abs() > s * stds).astype(int).values
 
 def build_ete_edges():
-    E = pd.read_excel("ETE_LogRet.xlsx", index_col=0).values
-    Z = pd.read_excel("Zscore_LogRet.xlsx", index_col=0).values
+    E = pd.read_excel("../data/ETE_LogRet.xlsx", index_col=0).values
+    Z = pd.read_excel("../data/Zscore_LogRet.xlsx", index_col=0).values
     mask = (E > 0) & (Z > 1.96)
 
     src, dst = np.where(mask)
@@ -93,7 +93,7 @@ class HETE_GCN(torch.nn.Module):
 # === 5) Inference only ===
 def main():
     # load + pivot
-    df = pd.read_excel("nifty_ohlc_with_regimes.xlsx", parse_dates=["Date"])
+    df = pd.read_excel("../data/nifty_ohlc_with_regimes.xlsx", parse_dates=["Date"])
     lr = df.pivot(index="Date", columns="Ticker", values="LogRet")
     rv = df.pivot(index="Date", columns="Ticker", values="RV")
 
@@ -145,20 +145,24 @@ def main():
 
     # --- new: save to CSV ---
     preds_df.to_csv(
-        "out_of_sample_predictions.csv",
+        "../outputs/predictions/out_of_sample_predictions.csv",
         float_format="%.4f",
         date_format="%Y-%m-%d",
         index_label="Date"
     )
     trues_df.to_csv(
-        "out_of_sample_actuals.csv",
+        "../outputs/predictions/out_of_sample_actuals.csv",
         float_format="%.4f",
         date_format="%Y-%m-%d",
         index_label="Date"
     )
-    print("✅ Saved CSVs: out_of_sample_predictions.csv, out_of_sample_actuals.csv")
+    print("✅ Saved CSVs: outputs/predictions/out_of_sample_predictions.csv, outputs/predictions/out_of_sample_actuals.csv")
     # --- end new ---
 
+    # Create results directory if it doesn't exist
+    results_dir = "../graphs"
+    os.makedirs(results_dir, exist_ok=True)
+    
     # loop over tickers and both show & save each figure
     for ticker in tickers:
         fig, ax = plt.subplots(figsize=(10,4))
@@ -173,9 +177,9 @@ def main():
         # show interactive window (if your backend supports it)
         plt.show()
         
-        # and also save to PNG so you can inspect later
-        outfn = f"oos_{ticker}.png"
-        fig.savefig(outfn)
+        # and also save to PNG in the results directory
+        outfn = os.path.join(results_dir, f"oos_{ticker}.png")
+        fig.savefig(outfn, dpi=300, bbox_inches='tight')
         print(f"Saved plot to {outfn}")
         plt.close(fig)
 

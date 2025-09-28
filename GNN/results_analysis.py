@@ -3,8 +3,8 @@ import pandas as pd
 
 # Assuming preds_df and trues_df are already defined in your session
 # If not, load them from the CSVs saved earlier:
-preds_df = pd.read_csv("out_of_sample_predictions.csv", index_col=0, parse_dates=True)
-trues_df = pd.read_csv("out_of_sample_actuals.csv", index_col=0, parse_dates=True)
+preds_df = pd.read_csv("../outputs/predictions/out_of_sample_predictions.csv", index_col=0, parse_dates=True)
+trues_df = pd.read_csv("../outputs/predictions/out_of_sample_actuals.csv", index_col=0, parse_dates=True)
 
 metrics_list = []
 for ticker in preds_df.columns:

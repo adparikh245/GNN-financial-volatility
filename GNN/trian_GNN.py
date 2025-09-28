@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from torch_geometric.data import Data
 import os
 
-SAVE_PATH = "/Users/ananyaparikh/Documents/Coding/EquirusResearch/GNN/hete_gcn_best.pt"
+SAVE_PATH = "../models/hete_gcn_best.pt"
 
 # === 1) Your best hyperparameters ===
 best_params = {
@@ -123,7 +123,7 @@ def train_model(train_loader, val_loader, model, optimizer, loss_fn, epochs=100)
 # === 7) Main ===
 def main():
     # load + pivot
-    df = pd.read_excel("nifty_ohlc_with_regimes.xlsx", parse_dates=["Date"])
+    df = pd.read_excel("../data/nifty_ohlc_with_regimes.xlsx", parse_dates=["Date"])
     lr = df.pivot(index="Date", columns="Ticker", values="LogRet")
     rv = df.pivot(index="Date", columns="Ticker", values="RV")
 
