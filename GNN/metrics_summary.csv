@@ -1,0 +1,6 @@
+Metric,mean ± std
+RMSE,0.3142 ± 0.2122
+MAE,0.2523 ± 0.1595
+MAPE (%),18.5470 ± 6.7865
+Correlation,0.5532 ± 0.2726
+Hit Ratio,0.5165 ± 0.0437
