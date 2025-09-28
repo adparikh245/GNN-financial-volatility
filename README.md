@@ -1,4 +1,4 @@
-# Equirus Research - GNN for Financial Time Series
+# GNN for Financial Time Series
 
 **Inspired by:** "Graph-Based Stock Volatility Forecasting with Effective Transfer Entropy and Hurst-Based Regime Adaptation" by Sangheon Lee and Poongjin Cho
 
