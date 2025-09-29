@@ -10,7 +10,7 @@ This project implements a Graph Neural Network (GNN) approach for stock volatili
 ## Project Structure
 
 ```
-EquirusResearch/
+Structure/
 ├── data/                          # Raw data files
 │   ├── nifty_ohlc_formatted.xlsx
 │   ├── NIFTY50_index_prices.xlsx
